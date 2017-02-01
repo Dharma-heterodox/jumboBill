@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+	"selectall":"<div class='checkbox table-body-checkbox'>
+                                                            <label>
+                                                               <input type="checkbox' value=''>
+                                                               <span class='cr'><i class='cr-icon glyphicon glyphicon-ok'></i></span>
+                                                            </label>
+                                                        </div>"
+      "title": "<span class='status1 in-recap'></span>  <span class='title_text'><a href='#'>The A to Z of time management.</a></span>",
+      "author": "al-Shak'ah, Mustafa.",
+      "publisher": "Maktabat al-Anglu al-Misriyah,",
+      "publisher-date": "1968",
+      "oi": "NYPL",
+      "cc": "NA",
+	  "cgd": "Shared",
+      "use-restriction": "In Library Use",
+      "barcode": "33433013476548",
+      "sh": ""
+    },
+    {
+	"selectall":"<div class='checkbox table-body-checkbox'>
+                                                            <label>
+                                                               <input type="checkbox' value=''>
+                                                               <span class='cr'><i class='cr-icon glyphicon glyphicon-ok'></i></span>
+                                                            </label>
+                                                        </div>"
+      "title": "<span class='status1 out-recap'></span>  <span class='title_text'><a href='#'>The A to Z of time management.</a></span>",
+      "author": "al-Shak'ah, Mustafa.",
+      "publisher": "Maktabat al-Anglu al-Misriyah,",
+      "publisher-date": "1968",
+      "oi": "NYPL",
+      "cc": "NA",
+	  "cgd": "Shared",
+      "use-restriction": "In Library Use",
+      "barcode": "33433013476548",
+      "sh": ""
+    },
+	{
+      "title": "<span class='status1 in-recap'></span>  <span class='title_text'><a href='#'>The A to Z of time management.</a></span>",
+      "author": "al-Shak'ah, Mustafa.",
+      "publisher": "Maktabat al-Anglu al-Misriyah,",
+      "publisher-date": "1968",
+      "oi": "NYPL",
+      "cc": "NA",
+	  "cgd": "Shared",
+      "use-restriction": "In Library Use",
+      "barcode": "33433013476548",
+      "sh": ""
+    }
+  ]
+}

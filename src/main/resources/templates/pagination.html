@@ -1,0 +1,37 @@
+<div id="paginationId" name="paginationName" xmlns:th="http://www.w3.org/1999/xhtml">
+    <ul class="pagination">
+        <li th:class="*{pageNumber == 0} ? 'disabled' : ''">
+            <span th:if="*{pageNumber == 0}">First</span>
+            <a th:if="*{pageNumber != 0}" href="#"
+               title="Go to first page"
+               onclick="document.getElementById('firstBottom').click();">First</a>
+            <button id="firstBottom" type="submit" name="action"
+                    value="first" hidden="hidden"></button>
+        </li>
+        <li th:class="*{(pageNumber != 0) &amp;&amp; (totalPageCount &gt; 1)}? '' : 'disabled'">
+            <span th:if="*{pageNumber == 0}">Previous</span>
+            <a th:if="*{pageNumber != 0}" href="#"
+               title="Go to previous page"
+               onclick="document.getElementById('pageNumber').value = parseInt(document.getElementById('pageNumber').value) - 1; document.getElementById('previousBottom').click();">Previous</a>
+            <button id="previousBottom" type="submit"
+                    name="action" value="previous"
+                    hidden="hidden"></button>
+        </li>
+        <li th:class="*{(pageNumber+1 != totalPageCount) &amp;&amp; (totalPageCount &gt; 1)}? '' : 'disabled'">
+            <span th:if="*{pageNumber+1 == totalPageCount}">Next</span>
+            <a th:if="*{pageNumber+1 != totalPageCount}"
+               href="#" title="Go to next page"
+               onclick="document.getElementById('pageNumber').value = parseInt(document.getElementById('pageNumber').value) + 1; document.getElementById('nextBottom').click();">Next</a>
+            <button id="nextBottom" type="submit" name="action"
+                    value="next" hidden="hidden"></button>
+        </li>
+        <li th:class="*{pageNumber+1 == totalPageCount}? 'disabled' : ''">
+            <span th:if="*{pageNumber+1 == totalPageCount}">Last</span>
+            <a th:if="*{pageNumber+1 != totalPageCount}"
+               href="#"
+               onclick="document.getElementById('lastBottom').click();">Last</a>
+            <button id="lastBottom" type="submit" name="action"
+                    value="last" hidden="hidden"></button>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,59 @@
+<div id="recapPageHeaderId" name="recapPageHeaderName" xmlns:th="http://www.w3.org/1999/xhtml">
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $.ajax({url: "/getVersionNumber", success: function(result){
+                console.log(result);
+                $("#version").html(result);
+            }});
+        });
+    </script>
+    <header class="">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="row">
+                        <div class="col-sm-6 ">
+                            <div class="row">
+                                <div class="dashboard_recap col-sm-4">
+                                    <a href="http://recap.princeton.edu/"><img th:src="@{../images/recap-logo.png}" class="" alt="ReCAP"/></a>
+                                </div>
+                                <div class="dashboard_recaptext col-sm-8">
+                                    The Research Collections And<br/>Preservation Consortium
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="header-info">
+                                <div class="row text-right">
+                                    <div class="col-xs-12">
+                                        <div class="pull-right margin-left-30" style="margin-top: -10px">
+                                            Version::<span id="version"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row margin-top-15 text-right">
+                                    <div class="col-xs-12">
+                                        <div class="pull-right margin-left-30">
+                                            Welcome <span th:text="${session.userName}"></span> <span class="glyphicon glyphicon-menu-down small"></span>
+                                        </div>
+                                        <div class="pull-right"><span th:text="${#dates.format(#dates.createNow(), 'dd MMMM yyyy hh:mm a')}"></span></div>
+                                    </div>
+                                </div>
+                                <div class="row margin-top-15 text-right" style="margin-bottom: 15px;">
+                                    <div class="col-xs-12">
+                                        <div class="pull-right  margin-left-30">
+                                            <a href="/logout" class="logout-login logout"><span></span>Logout</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="#" class="settings"><span></span>Settings</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>

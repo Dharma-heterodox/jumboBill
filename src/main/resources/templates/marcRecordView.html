@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Marc Record</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/Bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/DataTables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{../css/styles.css}"/>
+    <script type="text/javascript" th:src="@{../lib/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/jquery.dataTables.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/dataTables.bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Buttons/js/buttons.colVis.js}"></script>
+</head>
+<body class="dashboard-detailpage dashboard-page">
+<div th:replace="recapHeader :: #recapPageHeaderId"></div>
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="padding-left-15 padding-right-15">
+                    <div id="marcRecordViewDivId" name="marcRecordViewDivName" th:fragment="marcRecordContent">
+                        <div id="marcRecordFormDivId" name="marcRecordFormDivName" th:fragment="marcRecord-form"
+                             xmlns:th="http://www.thymeleaf.org"
+                             th:remove="tag">
+                            <form id="marcRecord-form" name="marcRecord-form" class="form-horizontal" action="#"
+                                  th:action="@{/openMarcRecord}"
+                                  th:object="${bibliographicMarcForm}" method="post">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h3 class="pull-left padding-left-20 fontcolor-dark margin-top-15"><span th:text="${bibliographicMarcForm.title}"></span></h3>
+                                        </div>
+                                    </div>
+                                    <div class="margin-top-10 margin-btm-20 padding-top-20 padding-left-20 padding-right-20 bg-white">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Author</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.author}"></span></div>
+                                                </div>
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Published Date</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.publishedDate}"></span></div>
+                                                </div>
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Call Number</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.callNumber}"></span></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Publisher</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.publisher}"></span></div>
+                                                </div>
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Owning Institution</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.owningInstitution}"></span></div>
+                                                </div>
+                                                <div class="row margin-btm-05">
+                                                    <div class="col-sm-5">Collection Group Designation (CGD)</div>
+                                                    <div class="col-sm-7 fontcolor-light">: <span th:text="${bibliographicMarcForm.monographCollectionGroupDesignation}"></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="divider-horizontal margin-top-10 margin-btm-20"></div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="contentdetail">
+                                                    <h4 class="border-style-bottom padding-10 margin-top-05 margin-btm-0">MARC Content</h4>
+                                                    <div class="padding-10">
+                                                        <div>
+                                                            <table class="table table-striped margin-btm-0">
+                                                                <tr>
+                                                                    <td width="20%">tag000</td>
+                                                                    <td><span th:text="${bibliographicMarcForm.tag000}"></span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Control Number (001)</td>
+                                                                    <td><span th:text="${bibliographicMarcForm.controlNumber001}"></span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Date and Time (005)</td>
+                                                                    <td><span th:text="${bibliographicMarcForm.controlNumber005}"></span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Fixed Length Data Element (008)</td>
+                                                                    <td><span th:text="${bibliographicMarcForm.controlNumber008}"></span></td>
+                                                                </tr>
+                                                                <tr th:each="bibDataField : *{bibDataFields}">
+                                                                    <td>
+                                                                        <span style="margin-left: 30px;" th:text="${bibDataField.dataFieldTag}"></span>
+                                                                        <span th:inline="text">[[${bibDataField.indicator1}]][[${bibDataField.indicator2}]]</span>
+                                                                    </td>
+                                                                    <td><span th:text="${bibDataField.dataFieldValue}"></span></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="recapFooter :: #recapPageFooterId"></div>
+</body>
+</html>

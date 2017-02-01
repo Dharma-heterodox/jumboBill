@@ -1,0 +1,52 @@
+/* Do not change */
+
+.select-step {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    -webkit-appearance: none;
+}
+
+/* You can change from here */
+
+.jquery-select-step {
+    display: inline-block;
+	width:100%;
+}
+.jquery-select-step-element {
+    position: relative;
+    display: inline-block;
+    padding: 0 15px;
+    font-size: 14px; 
+    line-height: 32px;
+    color: #555;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #fff;
+    border: 1px solid #888988;
+	width:100%;
+	
+}
+.jquery-select-step-element > div {
+    display: inline-block;
+}
+.decrementStep, .incrementStep {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    text-align: center;    
+    cursor: pointer;
+	line-height:0;
+	font-size:13px;
+	color:#848484;
+}
+.incrementStep { 
+	top:auto;
+	bottom:5px;
+    border-right: 0; 
+}
+.decrementStep span, .incrementStep span{line-height:12px;}

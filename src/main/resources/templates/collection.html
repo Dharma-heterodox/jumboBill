@@ -1,0 +1,440 @@
+<!-- Collection Tab-->
+<div id="collectionContentId" name="collectionContentName" th:fragment="content" xmlns:th="http://www.thymeleaf.org" role="tabpanel" class="tab-pane active">
+    <link rel="stylesheet" th:href="@{../css/collection.css}"/>
+    <script type="text/javascript" th:src="@{../js/collection.js}"></script>
+    <div id="collectionFormDivId" name="collectionFormDivName" th:fragment="collection-form"
+         xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+        <form id="collection-form" name="collection-form" class="form-horizontal" action="#"
+              th:action="@{/collection}"
+              th:object="${collectionForm}" method="post">
+            <fieldset>
+                <div class="search-bar">
+                    <div class="row margin-0">
+                        <div class="col-xs-12  padding-0">
+                            <div class="row margin-btm-10">
+                                <div class="col-sm-1 padding-right-10 collection-title">Barcode(s)</div>
+                                <div class="col-sm-11 padding-left-0">
+                                    <form>
+                                        <div class="input-group buscador-principal">
+                                            <input id="bibId" type="hidden" th:field="*{bibId}"/>
+                                            <input id="itemId" type="hidden" th:field="*{itemId}"/>
+                                            <input id="shared" type="hidden" th:field="*{shared}"/>
+                                            <input id="submitted" type="hidden" value="false" th:field="*{submitted}"/>
+                                            <input id="title" type="hidden" th:field="*{title}"/>
+                                            <input id="author" type="hidden" th:field="*{author}"/>
+                                            <input id="publisher" type="hidden" th:field="*{publisher}"/>
+                                            <input id="publishedDate" type="hidden" th:field="*{publishedDate}"/>
+                                            <input id="callNumber" type="hidden" th:field="*{callNumber}"/>
+                                            <input id="showModal" type="hidden" th:field="*{showModal}"/>
+                                            <div>
+                                                <input id="barcodeFieldId" name="barcodeFieldName" type="text"
+                                                       placeholder="Type Text Here....." th:field="*{itemBarcodes}"
+                                                       class="form-control">
+                                                </input>
+                                            </div>
+                                            <div class="input-group-btn search-panel padding-right-10">
+                                                <button id="displayRecords" type="submit" name="action" value="displayRecords"
+                                                        class="btn themed-button themed-button-collection">Display
+                                                    Records
+                                                </button>
+                                            </div>
+                                            <div class="input-group-btn">
+                                                <button id="clearSearch" type="submit" name="clearSearch"
+                                                        class="btn themed-button themed-button-cancel">Clear Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="noteTextDivId">
+                                <em id="noteTextSpanId" class="notes">NOTE:</em>
+                                <ul id="notesListId" style="list-style-type:disc;">
+                                    <li>
+                                        <em id="noteTextMultipleSpanId">Multiple item barcodes separated by commas(,)
+                                            can be added to retrieve the records.</em>
+                                    </li>
+                                    <li>
+                                        <em id="noteTextMaxSpanId">A maximum of only 10 items can be retrieved.</em>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="searchResultsContainer" class="search-results-container" data-th-if="*{showResults}">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"></div>
+                            <div id="errorMessageId" class="row margin-btm-10" data-th-if="*{errorMessage ne null &amp;&amp; errorMessage ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span id="errorMessageSpanId" th:text="*{errorMessage}"></span></div>
+                                </div>
+                            </div>
+                            <div id="barcodesNotFoundErrorMessageId" class="row margin-btm-10" data-th-if="*{barcodesNotFoundErrorMessage ne null &amp;&amp; barcodesNotFoundErrorMessage ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span id="barcodesNotFoundErrorMessageSpanId" th:text="*{barcodesNotFoundErrorMessage}"></span></div>
+                                </div>
+                            </div>
+                            <div id="ignoredBarcodesErrorMessageId" class="row margin-btm-10" data-th-if="*{ignoredBarcodesErrorMessage ne null &amp;&amp; ignoredBarcodesErrorMessage ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span id="ignoredBarcodesErrorMessageSpanId" th:text="*{ignoredBarcodesErrorMessage}"></span></div>
+                                </div>
+                            </div>
+                            <div class="row" th:if="*{searchResultRows.size() &gt; 0 &amp;&amp; showResults}">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="pull-left col-sm-2">
+                                            <div class="recap-status">
+                                                <div class="inline-box margin-right-10">
+                                                    <img class="status" src="images/inRecap.png" alt="In ReCAP"
+                                                         style="width:20px;height:25px;"/><span
+                                                        class="align-middle padding-5">In ReCAP</span>
+                                                </div>
+                                                <div class="inline-box">
+                                                    <img class="status" src="images/out.png" alt="Out"
+                                                         style="width:20px;height:25px;"/><span
+                                                        class="align-middle padding-5">OUT</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="">CGD - Collection Group Designation</p>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <table id="collection-result-table" class="table table-striped margin-btm-0">
+                                        <thead class="tablesorter-headerRow">
+                                        <tr>
+                                            <th width="30%" height="40">
+                                                <div>Barcode</div>
+                                            </th>
+                                            <th width="50%">
+                                                <div>Title</div>
+                                            </th>
+                                            <th th:title="'Collection Group Designation'">
+                                                <div>CGD</div>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr data-th-id="'displayResults-'+ ${searchResultStat.index}"
+                                            th:each="searchResult,searchResultStat : *{searchResultRows}"
+                                            class="displayRow">
+                                            <input data-th-id="'displayRowBibId-'+ ${searchResultStat.index}"
+                                                   name="displayRowBibId" type="hidden"
+                                                   th:field="*{searchResultRows[__${searchResultStat.index}__].bibId}"/>
+                                            <input data-th-id="'displayRowItemId-'+ ${searchResultStat.index}"
+                                                   name="displayRowItemId" type="hidden"
+                                                   th:field="*{searchResultRows[__${searchResultStat.index}__].itemId}"/>
+                                            <td>
+                                                <input type="hidden"
+                                                       th:field="*{searchResultRows[__${searchResultStat.index}__].barcode}"/>
+                                                <span class="status1">
+                                                    <img src="images/inRecap.png" alt="In ReCAP"
+                                                         style="width:20px;height:25px;"
+                                                         th:if="${searchResult.availability == 'Available'}"/>
+                                                    <img src="images/out.png" alt="Out" style="width:20px;height:25px;"
+                                                         th:if="${searchResult.availability == 'Not Available'}"/>
+                                                </span>
+                                                    <span class="title_text" id="barcodeSpanId"
+                                                          th:text="${searchResult.barcode}"></span>
+                                            </td>
+                                            <td>
+                                                <input type="hidden"
+                                                       th:field="*{searchResultRows[__${searchResultStat.index}__].title}"/>
+                                                <span class="">
+                                                    <a id="titleLinkId" href="#" th:text="${searchResult.title}" th:onclick="'javascript:openMarcView('+${searchResult.bibId}+','+${searchResult.itemId}+')'"></a>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <input type="hidden"
+                                                       th:field="*{searchResultRows[__${searchResultStat.index}__].collectionGroupDesignation}"/>
+                                                    <span id="cgdSpanId"
+                                                          th:text="${searchResult.collectionGroupDesignation}"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="collectionUpdateModal">
+                    <div id="collection-result-inner" class="modal fade collection-result-inner-table" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                    <div class="modal-dialog modal-lg" role="document" style="width: 1200px;">
+                        <div id="collectionModalContent" class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title fontcolor-dark" id="myModalLabel"><span th:text="${collectionForm.title}"></span></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="fulldetails">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="row margin-btm-05">
+                                                <div class="col-sm-5">Author</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.author}"></span></div>
+                                            </div>
+                                            <div class="row margin-btm-05">
+                                                <div class="col-sm-5">Published Date</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.publishedDate}"></span></div>
+                                            </div>
+                                            <div class="row margin-btm-05">
+                                                <div class="col-sm-5">Call Number</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.callNumber}"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="row margin-btm-05">
+                                                <div class="col-sm-5">Publisher</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.publisher}"></span></div>
+                                            </div>
+                                            <div class="row margin-btm-05">
+                                                <input type="hidden" th:field="${collectionForm.owningInstitution}"/>
+                                                <div class="col-sm-5">Owning Institution</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.owningInstitution}"></span></div>
+                                            </div>
+                                            <div class="row margin-btm-05">
+                                                <div class="col-sm-5">Collection Group Designation (CGD)</div>
+                                                <div class="col-sm-7 fontcolor-light"><span th:text="${collectionForm.monographCollectionGroupDesignation}"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-10 margin-btm-10"><div class="col-sm-12 divider-horizontal"></div></div>
+                                    <div class="row">
+                                        <div class="col-sm-7">
+                                            <div class="contentdetail">
+                                                <h4 class="border-style-bottom padding-10 margin-top-05 margin-btm-0">MARC Content</h4>
+                                                <div class="padding-10">
+                                                    <div style="max-height:425px;overflow:auto">
+                                                        <table class="table table-striped small margin-btm-0">
+                                                            <tr>
+                                                                <input type="hidden" th:field="${collectionForm.tag000}"/>
+                                                                <td width="40%">tag000</td>
+                                                                <td><span th:text="${collectionForm.tag000}"></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <input type="hidden" th:field="${collectionForm.controlNumber001}"/>
+                                                                <td>Control Number (001)</td>
+                                                                <td><span th:text="${collectionForm.controlNumber001}"></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <input type="hidden" th:field="${collectionForm.controlNumber005}"/>
+                                                                <td>Date and Time (005)</td>
+                                                                <td><span th:text="${collectionForm.controlNumber005}"></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <input type="hidden" th:field="${collectionForm.controlNumber008}"/>
+                                                                <td>Fixed Length Data Element (008)</td>
+                                                                <td><span th:text="${collectionForm.controlNumber008}"></span></td>
+                                                            </tr>
+                                                            <tr th:each="bibDataField,bibDataFieldStat : ${collectionForm.bibDataFields}">
+                                                                <td>
+                                                                    <input type="hidden" th:field="${collectionForm.bibDataFields[__${bibDataFieldStat.index}__].dataFieldTag}"/>
+                                                                    <input type="hidden" th:field="${collectionForm.bibDataFields[__${bibDataFieldStat.index}__].indicator1}"/>
+                                                                    <input type="hidden" th:field="${collectionForm.bibDataFields[__${bibDataFieldStat.index}__].indicator2}"/>
+                                                                    <input type="hidden" th:field="${collectionForm.bibDataFields[__${bibDataFieldStat.index}__].dataFieldValue}"/>
+                                                                    <span style="margin-left: 30px;" th:text="${bibDataField.dataFieldTag}"></span>
+                                                                    <span th:inline="text">[[${bibDataField.indicator1}]][[${bibDataField.indicator2}]]</span>
+                                                                </td>
+                                                                <td><span th:text="${bibDataField.dataFieldValue}"></span></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-5 padding-left-0">
+                                            <div class="itemdetail">
+                                                <h4 class="border-style-bottom padding-10 margin-top-05 margin-btm-0">Item Details</h4>
+                                                <div id="itemDetailsSection" class="padding-10">
+
+                                                    <div class="row form-group">
+                                                        <div id="collectionUpdateMessage" class="row margin-btm-10" th:if="${collectionForm.message ne null &amp;&amp; collectionForm.message ne ''}">
+                                                            <div class="col-sm-12">
+                                                                <div class="bg-success text-success padding-10">
+                                                                    <span class="margin-right-05 glyphicon glyphicon-saved"></span><span th:text="${collectionForm.message}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="collectionUpdateErrorMessage" class="row margin-btm-10" th:if="${collectionForm.errorMessage ne null &amp;&amp; collectionForm.errorMessage ne ''}">
+                                                            <div class="col-sm-12">
+                                                                <div class="bg-danger text-danger padding-10">
+                                                                    <span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span th:text="${collectionForm.errorMessage}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <table class="table table-striped small margin-btm-0">
+                                                        <tr>
+                                                            <input type="hidden" th:field="${collectionForm.availability}"/>
+                                                            <td width="60%">Availability</td>
+                                                            <td th:if="${collectionForm.availability == 'Available'}"><span th:text="'In Recap'"></span></td>
+                                                            <td th:if="${collectionForm.availability == 'Not Available'}"><span th:text="'Out'"></span></td>
+                                                            <td th:if="${collectionForm.availability != 'Available' &amp;&amp; collectionForm.availability != 'Not Available'}"><span th:text="${collectionForm.availability}"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <input type="hidden" th:field="${collectionForm.barcode}"/>
+                                                            <td>Barcode</td>
+                                                            <td><span th:text="${collectionForm.barcode}"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <input type="hidden" th:field="${collectionForm.customerCode}"/>
+                                                            <td>Customer Code</td>
+                                                            <td><span th:text="${collectionForm.customerCode}"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <input type="hidden" th:field="${collectionForm.useRestriction}"/>
+                                                            <td>Use Restriction</td>
+                                                            <td><span th:text="${collectionForm.useRestriction}"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <input id="cgdField" type="hidden" th:field="${collectionForm.collectionGroupDesignation}"/>
+                                                            <td>Collection Group Designation (CGD)</td>
+                                                            <td><span th:text="${collectionForm.collectionGroupDesignation}"></span></td>
+                                                        </tr>
+                                                    </table>
+                                                    <div th:if="${collectionForm.allowEdit}">
+                                                    <div id="collectionOptionsDiv" class="row radio-btn-warpper" th:if="${!collectionForm.submitted}">
+                                                        <div class="col-sm-12" align="center">
+                                                            <div class="form-group margin-btm-10">
+                                                                <div class="radio-inline radio margin-0 padding-left-0">
+                                                                    <label>
+                                                                        <input type="radio" name="collectionoption" id="editCgdclick" value="Update CGD" th:field="${collectionForm.collectionAction}" onclick="editCgdcontrol()"/> Edit CGD
+                                                                        <span class="cr"><i class="cr-icon radio-dot"></i></span>
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="radio-inline radio padding-left-0 margin-left-15">
+                                                                    <label>
+                                                                        <input type="radio" name="collectionoption" id="deaccesionclick" value="Deaccession" th:field="${collectionForm.collectionAction}" onclick="deaccessioncontrol()"/> Deaccession
+                                                                        <span class="cr"><i class="cr-icon radio-dot"></i></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Edit CDG-->
+
+                                                    <div id="editCDG-section" class="padding-top-20">
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-4 text-right padding-right-30 margin-top-10">
+                                                                <label class="fontcolor-dark">New CGD <span class="error-color" th:if="${!collectionForm.submitted}">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-8 padding-left-0">
+                                                                <div class="select-holder" id="newCGDDiv" th:if="${!collectionForm.submitted}">
+                                                                    <select class="form-control themed-input themed-select"
+                                                                            name="newCGD"
+                                                                            id="newCGD"
+                                                                            th:field="${collectionForm.newCollectionGroupDesignation}"
+                                                                            th:onchange="'javascript:toggleNewCgdValidation()'">
+                                                                        <option value="">Select</option>
+                                                                        <option value="Shared">Shared</option>
+                                                                        <option value="Private">Private</option>
+                                                                        <option value="Open">Open</option>
+                                                                    </select>
+                                                                </div>
+                                                                <span id="cgdErrorMessage" style="color: red;">Choose a new CGD.</span>
+                                                                <div class="form-group padding-top-10">
+                                                                    <span id="newCGDReadOnly" th:if="${collectionForm.submitted}" th:text="${collectionForm.newCollectionGroupDesignation}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-4 text-right padding-right-30 margin-top-05">
+                                                                <label for="CGDChangeNotes" class="fontcolor-dark">CGD Change Notes <span class="error-color" th:if="${!collectionForm.submitted &amp;&amp; collectionForm.collectionGroupDesignation eq 'Shared'}">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-8 padding-left-0">
+                                                                <textarea class="form-control themed-input" name="CGDChangeNotes" id="CGDChangeNotes" th:field="${collectionForm.cgdChangeNotes}" th:if="${!collectionForm.submitted}" th:onkeyup="'javascript:toggleCgdNotesValidation()'"></textarea>
+                                                                <span id="cgdNotesErrorMessage" style="color: red;">Please enter CGD Change Notes.</span>
+                                                                <div class="form-group padding-top-10">
+                                                                    <span id="CGDNoteReadOnly" th:if="${collectionForm.submitted}" th:text="${collectionForm.cgdChangeNotes}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Deaccession-->
+                                                    <div id="Deaccession-section" class="padding-top-20">
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-4 text-right padding-right-30 margin-top-10">
+                                                                <label for="deaccessionType" class="fontcolor-dark">Deaccession Type <span class="error-color">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-8 padding-left-0 padding-top-10">
+                                                                <input type="text" id="deaccessionType" name="deaccessionType" class="form-control themed-input disable-input" th:field="${collectionForm.deaccessionType}" th:if="${!collectionForm.submitted}" readonly="readonly"/>
+                                                                <span th:if="${collectionForm.submitted}" th:text="${collectionForm.deaccessionType}"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-4 text-right padding-right-30 margin-top-10">
+                                                                <label for="DeliveryLocation" class="fontcolor-dark">Delivery Location <span class="error-color" th:if="${!collectionForm.submitted &amp;&amp; collectionForm.deaccessionType eq 'Permanent Withdrawal Direct (PWD)'}">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-8 padding-left-0">
+                                                                <div class="select-holder" th:if="${!collectionForm.submitted}">
+                                                                    <input type="hidden" th:field="${collectionForm.deliveryLocations}"/>
+                                                                    <select class="form-control themed-input themed-select"
+                                                                            name="DeliveryLocation"
+                                                                            id="DeliveryLocation"
+                                                                            th:field="${collectionForm.deliveryLocation}"
+                                                                            th:if="${!collectionForm.submitted}"
+                                                                            th:disabled="${collectionForm.availability != 'Available'}"
+                                                                            th:onchange="'javascript:toggleDeliveryLocationValidation()'">
+                                                                        <option value=""></option>
+                                                                        <option th:each="location : ${collectionForm.deliveryLocations}" th:value="${location}" th:text="${location}"></option>
+                                                                    </select>
+                                                                </div>
+                                                                <span id="locationErrorMessage" style="color: red;">This is a mandatory field.</span>
+                                                                <div class="form-group padding-left-10 padding-top-10">
+                                                                    <span th:if="${collectionForm.submitted}" th:text="${collectionForm.deliveryLocation}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-4 text-right padding-right-30 margin-top-10"><label for="DeaccessionNotes" class="fontcolor-dark">Deaccession Notes <span class="error-color" th:if="${!collectionForm.submitted}">*</span></label></div>
+                                                            <div class="col-sm-8 padding-left-0 padding-top-10">
+                                                                <textarea class="form-control themed-input" name="DeaccessionNotes" id="DeaccessionNotes" th:field="${collectionForm.deaccessionNotes}" th:if="${!collectionForm.submitted}" th:onkeyup="'javascript:toggleDeaccessionNotesValidation()'"></textarea>
+                                                                <span id="deaccessionNotesErrorMessage" style="color: red;">Please enter Deaccession Notes.</span>
+                                                                <span th:if="${collectionForm.submitted}" th:text="${collectionForm.deaccessionNotes}"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-sm-6 text-right padding-right-30"></div>
+                                                        <div class="col-sm-6 padding-left-0">
+                                                            <button id="collectionUpdateButton"
+                                                                    type="button"
+                                                                    name="action"
+                                                                    onclick="collectionUpdate()"
+                                                                    class="btn btn-primary"
+                                                                    th:if="${!collectionForm.submitted}">
+                                                                Submit
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="mandateText" th:if="${!collectionForm.submitted}">
+                                                        Fields marked with asterisk(<span class="error-color">*</span>) are mandatory.
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"></div>
+                            <div class="modal-footer">
+                                <button class="btn themed-button themed-button-cancel padding-left-30 padding-right-30" data-dismiss="modal" aria-label="Close">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<!-- Collection Tab-->

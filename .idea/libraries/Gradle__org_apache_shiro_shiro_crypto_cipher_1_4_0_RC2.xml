@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.shiro:shiro-crypto-cipher:1.4.0-RC2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-cipher/1.4.0-RC2/7458e154e57e8fbcbc62dc4377e77450923992/shiro-crypto-cipher-1.4.0-RC2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-cipher/1.4.0-RC2/5329596d17a36f976ed1f0fdab2072b86e7fd4fc/shiro-crypto-cipher-1.4.0-RC2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,538 @@
+<!-- Request Tab-->
+<div id="requestContentId" name="requestContentName" th:fragment="content" xmlns:th="http://www.thymeleaf.org">
+    <link rel="stylesheet" th:href="@{../css/request.css}"/>
+    <script type="text/javascript" th:src="@{../js/request.js}"></script>
+    <div id="requestFormDivId" name="requestFormDivName" th:fragment="request-form" xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+        <form id="request-form" name="request-form" class="form-horizontal" action="#"
+              th:action="@{/request}"
+              th:object="${requestForm}" method="post">
+            <fieldset>
+                <input id="pageNumber" name="pageNumber" type="text" th:field="*{pageNumber}" hidden="hidden"/>
+                <input id="totalPageCount" name="totalPageCount" type="text" th:field="*{totalPageCount}" hidden="hidden"/>
+                <input id="totalRecordsCount" name="totalRecordsCount" type="text" th:field="*{totalRecordsCount}" hidden="hidden"/>
+                <input id="patronBarcodeInRequestHdn" name="patronBarcodeInRequestHdn" type="text" value="" hidden="hidden"/>
+                <input id="patronEmailIdHdn" name="patronEmailIdHdn" type="text" value="" hidden="hidden"/>
+                <input id="requestingInstitutionHdn" name="requestingInstitutionHdn" type="text" value="" hidden="hidden"/>
+                <div role="tabpanel" class="tab-pane" id="request">
+                    <div id="searchRequestsSection" class="request-main-section" style="display:none;">
+                        <div class="search-bar">
+                            <div class="row margin-btm-10">
+                                <div class="col-sm-12 text-right backtext"><a href="#"><span class="glyphicon glyphicon-menu-left"></span> Go Back</a></div>
+                            </div>
+                            <div class="row margin-0">
+                                <div class="col-xs-12  padding-0">
+                                    <form>
+                                        <div class="input-group buscador-principal">
+                                            <div class="col-md-6 col-sm-6 padding-right-20 padding-left-0">
+                                                <label class="fontcolor-dark margin-btm-10">Patron Barcode</label>
+                                                <input id="patronBarcode" name="patronBarcode" type="text" th:field="*{patronBarcode}" class="form-control themed-input"/>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 padding-right-50 padding-left-50">
+                                                <label class="fontcolor-dark margin-btm-10">Item Barcode</label>
+                                                <input id="itemBarcode" name="itemBarcode" type="text" th:field="*{itemBarcode}" class="form-control themed-input"/>
+                                            </div>
+                                            <div class="input-group-btn search-panel padding-left-70 padding-right-10">
+                                                <button id="searchRequestsButton" class="btn themed-button themed-button-search" type="button" name="searchRequestsButton" onclick="searchRequests('searchRequests')">Search</button>
+                                            </div>
+                                            <div class="input-group-btn">
+                                                <button id="clearRequestForm" class="btn themed-button themed-button-cancel" type="button" name="action" onclick="clearRequests()">Clear Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-results-container" data-th-if="*{showResults}">
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"></div>
+                            <div class="row margin-btm-10" data-th-if="*{message ne null &amp;&amp; message ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span th:text="*{message}"></span></div>
+                                </div>
+                            </div>
+                            <div data-th-if="*{searchResultRows.size() &gt; 0 &amp;&amp; showResults}">
+                                <div class="row">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 margin-top-05 show-entries-section">
+                                        <div class="">
+                                            <span class="show-title margin-right-05">Show Entries</span>
+                                            <select id="numOfRecordsId" name="numOfRecordsName" class="themed-input">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option></select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9 col-md-10 col-lg-7 margin-top-10"><div class="row">RI - Requesting Institution, RT - Request Type, OI - Owning Institution</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-3 text-right"><h4>Search Results Found: <span th:text="*{totalRecordsCount}"></span></h4></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <table id="request-result-table" class="table table-striped margin-btm-0">
+                                            <thead class="tablesorter-headerRow">
+                                            <tr>
+                                                <th height="40" width="7%" align="center" class="text-center">
+                                                    <div class="checkbox table-header-checkbox">
+                                                        <label class="text-center">
+                                                            Select All
+                                                            <span class="clearfix"></span>
+                                                            <input type="checkbox" id="requestSelectAll"
+                                                                   name="requestSelectAll"
+                                                                   th:value="false"
+                                                                   th:onclick="'javascript:selectAllRows();enableRequestButtons()'">
+                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                            </input>
+                                                        </label>
+                                                    </div>
+                                                </th>
+                                                <th>PATRON BARCODE</th>
+                                                <th th:title="'Request Institution'">RI</th>
+                                                <th>ITEM BARCODE</th>
+                                                <th th:title="'ITEM Owning Institution'">ITEM OI</th>
+                                                <th>DELIVERY LOCATION</th>
+                                                <th th:title="'Request Type'">RT</th>
+                                                <th>REQUEST CREATED BY</th>
+                                                <th>PATRON EMAIL ADDRESS</th>
+                                                <th>REQUEST NOTES</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-th-id="'requestResults-'+ ${searchResultStat.index}" th:each="searchResult,searchResultStat : *{searchResultRows}" class="requestRow">
+                                                    <input data-th-id="'requestRowBibId-'+ ${searchResultStat.index}" name="requestRowBibId" type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].bibId}"/>
+                                                    <input data-th-id="'requestRowItemId-'+ ${searchResultStat.index}" name="requestRowItemId" type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].itemId}"/>
+                                                    <td align="center">
+                                                        <div class="checkbox table-body-checkbox">
+                                                            <label>
+                                                                <input type="checkbox" id="requestSelected" name="requestSelected"
+                                                                       th:field="*{searchResultRows[__${searchResultStat.index}__].selected}"
+                                                                       style="margin-left: 25px;"
+                                                                       onclick="enableRequestButtons()">
+                                                                <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                </input>
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].patronBarcode}"/>
+                                                        <span th:text="${searchResult.patronBarcode}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].requestingInstitution}"/>
+                                                        <span th:text="${searchResult.requestingInstitution}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].barcode}"/>
+                                                        <a th:href="@{/openMarcRecord(bibId=${searchResult.bibId})}" target="_blank" th:text="${searchResult.barcode}"></a>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].owningInstitution}"/>
+                                                        <span th:text="${searchResult.owningInstitution}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].deliveryLocation}"/>
+                                                        <span th:text="${searchResult.deliveryLocation}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].requestType}"/>
+                                                        <span th:text="${searchResult.requestType}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].requestCreatedBy}"/>
+                                                        <span th:text="${searchResult.requestCreatedBy}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].patronEmailId}"/>
+                                                        <span th:text="${searchResult.patronEmailId}"></span>
+                                                    </td>
+                                                    <td width="">
+                                                        <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].requestNotes}"/>
+                                                        <span th:text="${searchResult.requestNotes}"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="requestPaginationDivId" name="requestPaginationDivName" class="col-md-12" style="margin-bottom: -20px;">
+                                        <div class="pull-right">
+                                            <div id="requestPaginationId" name="requestPaginationName" xmlns:th="http://www.w3.org/1999/xhtml">
+                                                <ul class="pagination">
+                                                    <li th:class="*{pageNumber == 0} ? 'disabled' : ''">
+                                                        <span th:if="*{pageNumber == 0}">First</span>
+                                                        <a th:if="*{pageNumber != 0}" href="#"
+                                                           title="Go to first page"
+                                                           onclick="requestsFirstPage()">First</a>
+                                                    </li>
+                                                    <li th:class="*{(pageNumber != 0) &amp;&amp; (totalPageCount &gt; 1)}? '' : 'disabled'">
+                                                        <span th:if="*{pageNumber == 0}">Previous</span>
+                                                        <a th:if="*{pageNumber != 0}" href="#"
+                                                           title="Go to previous page"
+                                                           onclick="requestsPreviousPage()">Previous</a>
+                                                    </li>
+                                                    <li th:class="*{(pageNumber+1 != totalPageCount) &amp;&amp; (totalPageCount &gt; 1)}? '' : 'disabled'">
+                                                        <span th:if="*{pageNumber+1 == totalPageCount}">Next</span>
+                                                        <a th:if="*{pageNumber+1 != totalPageCount}"
+                                                           href="#" title="Go to next page"
+                                                           onclick="requestsNextPage()">Next</a>
+                                                    </li>
+                                                    <li th:class="*{pageNumber+1 == totalPageCount}? 'disabled' : ''">
+                                                        <span th:if="*{pageNumber+1 == totalPageCount}">Last</span>
+                                                        <a th:if="*{pageNumber+1 != totalPageCount}"
+                                                           href="#"
+                                                           onclick="requestsLastPage()">Last</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="requestButtonsId" name="requestButtonsName" class="form-group input-group-btn" align="center">
+                                        <button id="cancelRequestsButtonId" type="button" name="action" value="cancelRequests" class="btn btn-primary" disabled="disabled">Cancel Selected Requests</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="createRequestSection" class="create-request-section">
+                        <div class="row margin-top-0">
+                            <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Create Request</h3></div>
+                            <div class="col-sm-6 text-right search-request"><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> Search Requests</a></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 divider-horizontal margin-top-10 margin-btm-10"></div>
+                        </div>
+                        <div class="buscador-principal">
+                            <div id="errorMessageId" class="row margin-btm-10">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span id="errorMessageSpanId" th:text="*{errorMessage}"></span></div>
+                                </div>
+                            </div>
+                            <div class="row margin-top-25 margin-btm-30">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-4 text-right margin-top-15"><label for="itemBarcodeId" class="fontcolor-dark">Item Barcode <span class="error-color">*</span></label></div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <input type="text"
+                                                           id="itemBarcodeId"
+                                                           name="itemBarcodeName"
+                                                           class="form-control themed-input"
+                                                           th:field="*{itemBarcodeInRequest}"
+                                                           th:onkeyup="'javascript:toggleItemBarcodeValidation()'"
+                                                           onblur="populateItemDetails()">
+                                                    </input>
+                                                    <span id="itemBarcodeErrorMessage" style="color: red;">Item barcode is required.</span>
+                                                    <span id="itemBarcodeNotFoundErrorMessage" style="color: red;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-6 col-sm-6 text-right margin-top-15"><label for="itemOwningInstitutionId" class="fontcolor-dark">Item Owning Institution</label></div>
+                                                <div class="col-md-6 col-sm-6">
+                                                    <input type="text"
+                                                           id="itemOwningInstitutionId"
+                                                           name="itemOwningInstitutionName"
+                                                           class="form-control themed-input"
+                                                           th:field="*{itemOwningInstitution}"
+                                                           readonly="readonly">
+                                                    </input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-4 text-right margin-top-15"><label for="itemTitleId" class="fontcolor-dark">Item title</label></div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <textarea type="text"
+                                                              id="itemTitleId"
+                                                              name="itemTitleName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{itemTitle}"
+                                                              readonly="readonly">
+                                                    </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 text-right margin-top-15"><label for="patronBarcodeId" class="fontcolor-dark">Patron Barcode <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text"
+                                                                   id="patronBarcodeId"
+                                                                   name="patronBarcodeName"
+                                                                   class="form-control themed-input"
+                                                                   th:field="*{patronBarcodeInRequest}"
+                                                                   th:onkeyup="'javascript:togglePatronBarcodeValidation()'">
+                                                            </input>
+                                                            <span id="patronBarcodeErrorMessage" style="color: red;">Patron barcode is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="patronEmailId" class="fontcolor-dark">Patron <br/>Email Address</label></div>
+                                                        <div class="col-md-8 col-sm-6">
+                                                            <input type="email"
+                                                                   id="patronEmailId"
+                                                                   name="patronEmailName"
+                                                                   class="form-control themed-input"
+                                                                   th:field="*{patronEmailAddress}"
+                                                                   onblur="validateEmailAddress()">
+                                                            </input>
+                                                            <span id="patronEmailIdErrorMessage" style="color: red;">Email address is invalid.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 text-right margin-top-15"><label for="requestingInstitutionId" class="fontcolor-dark">Requesting Institution <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-6">
+                                                            <div class="select-holder">
+                                                                <select id="requestingInstitutionId"
+                                                                        name="requestingInstitutionName"
+                                                                        class="form-control themed-input themed-select"
+                                                                        th:field="*{requestingInstitution}"
+                                                                        th:onchange="'javascript:toggleRequestingInstitutionValidation()'">
+                                                                    <option value=""></option>
+                                                                    <option th:each="requestingInstitution : *{requestingInstitutions}" th:value="${requestingInstitution}" th:text="${requestingInstitution}"></option>
+                                                                </select>
+                                                                <span id="requestingInstitutionErrorMessage" style="color: red;">Requesting institution is required.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 text-right margin-top-15"><label for="requestTypeId" class="fontcolor-dark">Request Type <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <div class="select-holder">
+                                                                <select id="requestTypeId"
+                                                                        name="requestTypeName"
+                                                                        class="form-control themed-input themed-select"
+                                                                        th:field="*{requestType}"
+                                                                        onchange="">
+                                                                    <option value=""></option>
+                                                                    <option th:each="requestType : *{requestTypes}" th:value="${requestType}" th:text="${requestType}"></option>
+                                                                </select>
+                                                                <span id="requestTypeErrorMessage" style="color: red;">Request type is required.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6" id="deliverylocation_request">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="deliveryLocationId" class="fontcolor-dark">Delivery
+                                                            <br/>Location <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-8 col-sm-6">
+                                                            <div class="select-holder">
+                                                                <select id="deliveryLocationId"
+                                                                        name="deliveryLocationName"
+                                                                        class="form-control themed-input themed-select"
+                                                                        th:field="*{deliveryLocationInRequest}"
+                                                                        th:onchange="'javascript:toggleDeliveryLocationValidation()'">
+                                                                    <option value=""></option>
+                                                                    <option th:each="location : *{deliveryLocations}" th:value="${location}" th:text="${location}"></option>
+                                                                </select>
+                                                                <span id="deliveryLocationErrorMessage" style="color: red;">Delivery location is required.</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                    <div class="row EDDdetails-section" id="EDD" style="display:none">
+                                        <div class="col-md-2 text-right col-sm-3"></div>
+                                        <div class="col-md-10 col-sm-9">
+                                            <h4 class="border-style-bottom fontcolor-dark margin-top-0">EDD Details</h4>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 margin-top-15"><label for="StartPage" class="fontcolor-dark">Start Page <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="StartPage" name="StartPage" th:field="*{startPage}" th:onkeyup="'javascript:toggleStartPageValidation()'"/>
+                                                            <span id="startPageErrorMessage" style="color: red;">Start page is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 text-right margin-top-15"><label for="EndPage" class="fontcolor-dark">End Page <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="EndPage" name="EndPage" th:field="*{endPage}" th:onkeyup="'javascript:toggleEndPageValidation()'"/>
+                                                            <span id="endPageErrorMessage" style="color: red;">End page is required.</span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 text-right margin-top-15"><label for="VolumeNumber" class="fontcolor-dark">Volume Number</label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="VolumeNumber" name="VolumeNumber" th:field="*{volumeNumber}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 margin-top-15"><label for="Issue" class="fontcolor-dark">Issue</label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="Issue" name="Issue" th:field="*{issue}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <div class="col-md-3 col-sm-4 text-right margin-top-15"><label for="ArticleAuthor" class="fontcolor-dark">Article Author</label></div>
+                                                        <div class="col-md-9 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="ArticleAuthor" name="ArticleAuthor" th:field="*{articleAuthor}"/>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-2 col-sm-4 margin-top-15"><label for="ArticleChapterTitle" class="fontcolor-dark">Article /
+                                                            Chapter Title <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-10 col-sm-8">
+                                                            <input type="text" class="form-control themed-input" id="ArticleChapterTitle" th:field="*{articleTitle}" th:onkeyup="'javascript:toggleArticleTitleValidation()'"/>
+                                                            <span id="articleTitleErrorMessage" style="color: red;">Article / Chapter title is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-2 text-right margin-top-15"><label for="requestNotesId" class="fontcolor-dark">Request Notes</label></div>
+                                                <div class="col-md-9 col-sm-10">
+                                                    <textarea type="text"
+                                                              id="requestNotesId"
+                                                              name="requestNotesName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{requestNotes}"
+                                                              rows="5">
+                                                    </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-3 col-sm-2 text-right margin-top-15"></div>
+                                                <div class="col-md-9 col-sm-10">
+                                                    Fields marked with asterisk(<span class="error-color">*</span>) are mandatory.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 text-center">
+                                    <button type="button" class="btn btn-default themed-button btn-primary" id="createrequestsubmit" onclick="createRequest()">Submit</button>
+                                    <button type="reset" class="btn btn-default themed-button themed-button-cancel" id="createrequestclear" onclick="resetDefaults()">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Data-->
+                <div id="createRequestModal" class="modal fade create-request-details" tabindex="-2" role="dialog" aria-labelledby="myLargeModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div id="createRequestModalContent" class="modal-content">
+                            <div class="modal-header bg-success">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2 class="modal-title text-center text-success margin-top-40" id="myModalLabel">
+                                    <span class="glyphicon glyphicon-ok-circle"></span><br/>
+                                    <span id="itemTitleHead" th:text="${requestForm.itemTitle}"></span></h2>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="padding-10">
+                                            <table class="table table-striped small margin-btm-0">
+                                                <tr>
+                                                    <td>Item Barcode</td>
+                                                    <td><span id="itemBarcodeInRequest" th:text="${requestForm.itemBarcodeInRequest}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Item title</td>
+                                                    <td><span id="itemTitle" th:text="${requestForm.itemTitle}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Item Owning Institution</td>
+                                                    <td><span id="itemOwningInstitution"  th:text="${requestForm.itemOwningInstitution}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Patron Barcode</td>
+                                                    <td><span id="patronBarcodeInRequest" th:text="${requestForm.patronBarcodeInRequest}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Patron Email Address</td>
+                                                    <td><span id="patronEmailAddress" th:text="${requestForm.patronEmailAddress}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Requesting Institution</td>
+                                                    <td><span id="requestingInstitution" th:text="${requestForm.requestingInstitution}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Requesting Type</td>
+                                                    <td><span id="requestType" th:text="${requestForm.requestType}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Delivery Location</td>
+                                                    <td><span id="deliveryLocationInRequest" th:text="${requestForm.deliveryLocationInRequest}"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Request Notes</td>
+                                                    <td><span id="requestNotes" th:text="${requestForm.requestNotes}"></span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"></div>
+                            <div class="modal-footer">
+                                <button id="anotherRequestButtonId" class="btn btn-default themed-button btn-primary padding-left-30 padding-right-30" onclick="createRequestSamePatron()" type="button">Create Another Request for Same Patron</button>
+                                <button id="modalCancelButtonId" class="btn themed-button themed-button-cancel padding-left-30 padding-right-30" data-dismiss="modal" aria-label="Close" type="button">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Data-->
+            </fieldset>
+        </form>
+    </div>
+</div>
+<!-- Request Tab Ends-->

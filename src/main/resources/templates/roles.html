@@ -1,0 +1,498 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Roles</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+<div id="rolesContentId" name="rolesContentName" th:fragment="content">
+    <link rel="stylesheet" th:href="@{../css/roles.css}"/>
+    <script type="text/javascript" th:src="@{../js/roles.js}"></script>
+    <script type="text/javascript" th:src="@{../js/bootstrap-datepicker-reports.js}"></script>
+    <script type="text/javascript" th:src="@{../js/bootstrap-multiselect.js}"></script>
+    <script type="text/javascript" th:src="@{../js/moment.js}"></script>
+    <script type="text/javascript" th:src="@{../js/select-step.js}"></script>
+    <link rel="stylesheet" th:href="@{../css/bootstrap-datepicker.css}"/>
+    <link rel="stylesheet" th:href="@{../css/bootstrap-multiselect.css}"/>
+    <link rel="stylesheet" th:href="@{../css/select-step.css}"/>
+    <div xmlns:th="http://www.thymeleaf.org" id="rolesFormDivId" name="rolesFormDivName" th:fragment="roles-form"
+         th:remove="tag">
+        <form id="roles-form" name="roles-form" class="form-horizontal" action="#"
+              th:action="@{/roles}"
+              th:object="${rolesForm}" method="post">
+            <fieldset>
+                <div role="tabpanel" class="tab-pane" id="recaprole">
+                    <div id="role-searchview" class="roles-main-section">
+                        <div class="col-sm-7">Provide one or more data to search. Empty search would return all data.</div>
+                        <div class="col-lg-12 text-right roleCreateNewlink" onclick="populatePermissionNames()" style="margin-top: -20px;"><a href="#" id="createRoleLink"><span
+                                class="glyphicon glyphicon-plus-sign"></span> Create Role</a></div>
+                        <div class="search-bar">
+                            <div class="row margin-0">
+                                <div class="col-xs-12  padding-0">
+                                    <form id="rolesearch">
+                                        <div class="input-group buscador-principal search-role-section">
+                                            <input id="pageNumber" name="pageNumber" type="text"
+                                                   th:field="*{pageNumber}" hidden="hidden"/>
+                                            <input id="totalPageCount" name="totalPageCount" type="text"
+                                                   th:field="*{totalPageCount}" hidden="hidden"/>
+                                            <input id="totalRecordsCount" name="totalBibRecordsCount" type="text"
+                                                   th:field="*{totalRecordCount}" hidden="hidden"/>
+                                            <input id="permissioinList" name="permissioinList" type="text"
+                                                   th:field="*{permissionNameList}" hidden="hidden"/>
+                                            <button id="pageSizeChangeButtonId" type="submit"
+                                                    name="action" value="pageSizeChange"
+                                                    hidden="hidden"></button>
+                                            <div class="col-md-6 col-sm-4 padding-right-25 padding-left-25">
+                                                <label class="fontcolor-dark margin-btm-10">Role Name</label>
+                                                <input id="roleName" class="form-control themed-input"
+                                                       th:field="*{roleName}" name="roleName" type="text"/>
+                                            </div>
+                                            <div class="col-md-6 col-sm-4 padding-right-25 padding-left-25">
+                                                <label class="fontcolor-dark margin-btm-10">Permission Name</label>
+                                                <input id="associatedFunctionality" class="form-control themed-input"
+                                                       th:field="*{permissionNames}" name="associatedFunctionality"
+                                                       type="text"/>
+                                            </div>
+                                            <div class="input-group-btn search-panel padding-left-70 padding-right-10">
+                                                <button id="searchRoles" class="btn themed-button themed-button-search"
+                                                        type="submit" name="action" value="searchRoles">Search
+                                                </button>
+                                            </div>
+                                            <div class="input-group-btn">
+                                                <button id="clearRolesForm"
+                                                        class="btn themed-button themed-button-cancel" type="submit"
+                                                        name="action" value="clear">Clear Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="search-results-container" data-th-if="*{showResults}">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="row margin-btm-10"
+                                         data-th-if="*{message ne null &amp;&amp; message ne ''}">
+                                        <div class="col-sm-12 text-left">
+                                            <div class="alert alert-success" role="alert" style="margin-top: 10px;margin-bottom: -5px;"><span
+                                                    class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                                    th:text="*{message}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-0">
+                                        <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Search Results</h3>
+                                        </div>
+                                        <!--<div class="col-sm-6 text-right search-request"><a href="#"><span class="glyphicon glyphicon-plus-sign"></span>Create Role</a></div>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"
+                                 data-th-if="*{showResults}"></div>
+                            <div class="row margin-btm-10 errorMessage" id="errorMessageId"
+                                 data-th-if="*{errorMessage ne null &amp;&amp; errorMessage ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger"><span
+                                            class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                            th:text="*{errorMessage}"></span></div>
+                                </div>
+                            </div>
+
+                            <div data-th-if="*{rolesSearchResults.size() &gt; 0 &amp;&amp; showResults}">
+                                <div id="showEntriesAndNumFoundDiv" name="showEntriesAndNumFoundDiv" class="row">
+                                    <div class="col-sm-2 margin-top-05 show-entries-section">
+                                        <div class="" style="margin-top: -10px;">
+                                            <span class="show-title">Show Entries</span>
+                                            <select id="numOfRecordsId" name="numOfRecordsName"
+                                                    class="themed-input"
+                                                    th:field="*{pageSize}"
+                                                    onchange="document.getElementById('pageSizeChangeButtonId').click()">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9 col-md-10 col-lg-7"></div>
+                                    <div class="col-sm-12 col-md-12 col-lg-3 text-right pull-right" style="margin-top:-10px;">
+                                        <h4><span>Total Results Found: <span th:text="*{#numbers.formatInteger(totalRecordCount,0,'COMMA')}"></span></span></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                <div class=" roleDetails" style="margin-top: -5px;">
+                                    <table class="table table-striped margin-btm-0" id="">
+                                        <thead class="tablesorter-headerRow">
+                                        <tr>
+                                            <th>Role Name</th>
+                                            <th>Role Description</th>
+                                            <th>Permission Names</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr data-th-id="'searchResults-'+ ${searchResultStat.index}"
+                                            th:each="searchResult,searchResultStat : *{rolesSearchResults}"
+                                            class="parentRow">
+
+                                            <input type="hidden"
+                                                   th:field="*{rolesSearchResults[__${searchResultStat.index}__].roleId}"/>
+                                            <!--<td data-th-id="'searchResultsRoleId'+ ${searchResultStat.index}">
+                                                <input type="hidden"
+                                                       th:field="*{rolesSearchResults[__${searchResultStat.index}__].roleId}"/>
+                                                <span data-th-id="'searchResultsRolesNameS'+ ${searchResultStat.index}"
+                                                      th:text="${searchResult.roleId}"></span>
+                                            </td>-->
+                                            <td data-th-id="'searchResultsRolesName'+ ${searchResultStat.index}">
+                                                <input type="hidden"
+                                                       th:field="*{rolesSearchResults[__${searchResultStat.index}__].rolesName}"/>
+                                                <span data-th-id="'searchResultsRolesNameS'+ ${searchResultStat.index}"
+                                                      th:text="${searchResult.rolesName}"></span>
+                                            </td>
+                                            <td data-th-id="'searchResultsRolesDescription-'+ ${searchResultStat.index}">
+                                                <input type="hidden"
+                                                       th:field="*{rolesSearchResults[__${searchResultStat.index}__].rolesDescription}"/>
+                                                <span data-th-id="'searchResultsRolesDescriptionS'+ ${searchResultStat.index}"
+                                                      th:text="${searchResult.rolesDescription}"></span>
+                                            </td>
+                                            <td data-th-id="'searchResultsPermissionName-'+ ${searchResultStat.index}">
+                                                <input type="hidden"
+                                                       th:field="*{rolesSearchResults[__${searchResultStat.index}__].permissionName}"/>
+                                                <span data-th-id="'searchResultsPermissionNameS'+ ${searchResultStat.index}"
+                                                      th:text="${searchResult.permissionName}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="edit-link margin-left-05 margin-right-05 editRole" ><a href="#" id="editUserLink"><span class="glyphicon glyphicon-pencil" th:onclick="'editRole(\'' + ${searchResult.roleId} + '\',\'' + ${searchResult.rolesName} + '\',\'' + ${searchResult.rolesDescription} + '\',\'' + ${searchResult.permissionName} + '\')'"></span></a>
+                                                    <a href="#" data-toggle="modal" data-target=".user-delete"><span class="glyphicon glyphicon-trash" th:onclick="'deleteRole(\'' + ${searchResult.roleId} + '\',\'' + ${searchResult.rolesName} + '\',\'' + ${searchResult.rolesDescription} + '\',\'' + ${searchResult.permissionName} + '\')'"></span></a></div>
+                                            </td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="margin-btm-0 pull-right" style="margin-top:-10px; margin-bottom:-30px;">
+                                                <div th:replace="pagination :: #paginationId"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="createRoleSection" class="create-role-section" style="display:none;">
+                            <div class="row margin-top-0">
+                                <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Create New Role</h3></div>
+                                <div class="col-sm-6 text-right backtext"><a href="#"><span
+                                        class="glyphicon glyphicon-menu-left"></span> Go Back</a></div>
+                            </div>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{message ne null &amp;&amp; message ne ''}">
+                            <div class="col-sm-12 text-left">
+                                <div class="alert alert-success" role="alert" id="success-alert"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{message}"></span></div>
+                            </div>
+                        </div>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{errorMessage ne null &amp;&amp; errorMessage ne ''}">
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{errorMessage}"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 divider-horizontal margin-top-10 margin-btm-10"></div>
+                        </div>
+                            <div class="buscador-principal">
+                                <div class="row margin-top-25 margin-btm-30">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="col-md-8 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="roleNameId" class="fontcolor-dark">Role Name <span class="error-color">*</span></label></div>
+                                                        <div class="col-sm- col-sm-6">
+                                                    <input type="text"
+                                                              id="roleNameId" th:onkeyup="'javascript:toggleRoleNameValidation()'"
+                                                              name="roleName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{newRoleName}">
+                                                    </input>
+                                                            <span id="roleNameErrorMessage" style="color: red;">Role Name is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="roleDescriptionId" class="fontcolor-dark">Role Description <span class="error-color">*</span></label></div>
+                                                        <div class="col-sm- col-sm-6">
+                                                    <input type="text"
+                                                              id="roleDescriptionId" th:onkeyup="'javascript:toggleRoleDescriptionValidation()'"
+                                                              name="roleName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{newRoleDescription}">
+                                                    </input>
+                                                            <span id="roleDescriptionErrorMessage" style="color: red;">Role Description is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                            <div class="col-md-6 col-sm-6" id="permissionName">
+                                                <div class="form-group">
+                                                    <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="permissionNameId" class="fontcolor-dark">Permission Names <span class="error-color">*</span></label></div>
+                                                    <div class="col-md-8 col-sm-6">
+                                                        <div class="select-holder" data-th-if="*{selectedPermissionNames ne null}">
+                                                            <select id="permissionNameId" th:onchange="'javascript:togglePermissionValidation()'"
+                                                                    multiple="multiple"
+                                                                    class="form-control themed-input themed-select multiSelectPermissionName"
+                                                                    name="newPermissionNames">
+
+                                                                <option th:each="permission : *{permissionNameList}" th:value="${permission}" th:text="${permission}" th:selected="${rolesForm.selectedPermissionNames.contains(permission)}"></option>
+                                                            </select>
+
+                                                            <span id="permissionNamesErrorMessage" style="color: red;">Permission Name is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                                <div class="col-xs-12 text-center">
+                                                    <button type="submit" name="action" value="loadCreateRole" class="btn btn-default themed-button btn-primary" id="createrolesubmitHdn" style="display: none;">Submit</button>
+                                                    <button type="button" class="btn btn-default themed-button btn-primary" id="createrolesubmit" onclick="createRole()">Submit</button>
+                                                    <button type="reset" class="btn btn-default themed-button themed-button-cancel" id="createrequestclear" onclick="createResetDefault()">Clear</button>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    <div id="editRoleSection" class="edit-role-section" style="display:none;">
+                        <div class="row margin-top-0">
+                            <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Edit Role</h3></div>
+                            <div class="col-sm-6 text-right backtext"><a href="#"><span
+                                    class="glyphicon glyphicon-menu-left"></span> Go Back</a></div>
+                        </div>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{message ne null &amp;&amp; message ne ''}">
+                            <div class="col-sm-12 text-left">
+                                <div class="alert alert-success" role="alert"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{message}"></span></div>
+                            </div>
+                        </div>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{errorMessage ne null &amp;&amp; errorMessage ne ''}">
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{errorMessage}"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 divider-horizontal margin-top-10 margin-btm-10"></div>
+                        </div>
+                        <div class="buscador-principal">
+                            <div class="row margin-top-25 margin-btm-30">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="roleId" class="fontcolor-dark"><span class="error-color"></span></label></div>
+                                                    <div class="col-sm-6 col-sm-4">
+                                                    <input type="hidden"
+                                                              id="roleId"
+                                                              name="roleId"
+                                                              hidden="hidden"
+                                                              class="form-control themed-input"
+                                                              th:field="*{roleId}">
+                                                    </input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="editRoleName" class="fontcolor-dark">Role Name <span class="error-color">*</span></label></div>
+                                                    <div class="col-sm- col-sm-6">
+                                                    <input type="text"
+                                                              id="editRoleName"
+                                                              name="roleName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{editRoleName}">
+                                                    </input>
+                                                        <span id="editRoleNameErrorMessage" style="color: red;">Role Name is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="editRoleDescription" class="fontcolor-dark">Role Description <span class="error-color">*</span></label></div>
+                                                    <div class="col-sm- col-sm-6">
+                                                    <input type="text"
+                                                              id="editRoleDescription"
+                                                              name="roleName"
+                                                              class="form-control themed-input"
+                                                              th:field="*{editRoleDescription}">
+                                                    </input>
+                                                        <span id="editRoleDescriptionErrorMessage" style="color: red;">Role Description is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6" id="editPermissionName">
+                                                <div class="form-group">
+                                                    <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="editPermissionNameId" class="fontcolor-dark">Permission Names <span class="error-color">*</span></label></div>
+                                                    <div class="col-md-8 col-sm-6">
+                                                        <div class="select-holder" data-th-if="*{selectedPermissionNames ne null}">
+                                                            <select id="editPermissionNameId"
+                                                                    multiple="multiple"
+                                                                    class="form-control themed-input themed-select multiSelectPermissionName"
+                                                                    name="editPermissionNameId">
+                                                                <option th:each="permission : *{permissionNameList}" th:value="${permission}" th:text="${permission}" th:selected="${rolesForm.selectedPermissionNames.contains(permission)}"></option>
+                                                            </select>
+
+                                                            <span id="editPermissionNamesErrorMessage" style="color: red;">Permission Name is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 text-center">
+                                            <button type="submit" name="action" value="editRole" class="btn btn-default themed-button btn-primary" id="editRolesubmitHdn" style="display: none;">Submit</button>
+                                            <button type="button" class="btn btn-default themed-button btn-primary" id="editRolesubmit" onclick="saveEditedRole()">Submit</button>
+                                            <button type="reset" class="btn btn-default themed-button themed-button-cancel" id="editRequestclear" onclick="editResetDefault()">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="deleteRoleSection" class="delete-role-section" style="display:none;">
+                        <div class="row margin-top-0">
+                            <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Delete Role</h3></div>
+                            <div class="col-sm-6 text-right backtext"><a href="#"><span
+                                    class="glyphicon glyphicon-menu-left"></span> Go Back</a></div>
+                        </div>
+                        <input id="afterDelPageNumber" name="afterDelPageNumber" type="text"
+                               th:field="${rolesForm.afterDelPageNumber}" hidden="hidden"/>
+                        <input id="afterDelTotalPageCount" name="afterDelTotalPageCount" type="text"
+                               th:field="${rolesForm.afterDelTotalPageCount}" hidden="hidden"/>
+                        <input id="afterDelPageSize" name="afterDelPageSize" type="text"
+                               th:field="${rolesForm.afterDelPageSize}" hidden="hidden"/>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{message ne null &amp;&amp; message ne ''}">
+                            <div class="col-sm-12 text-left">
+                                <div class="alert alert-success" role="alert"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{message}"></span></div>
+                            </div>
+                        </div>
+                        <div class="row margin-btm-10"
+                             data-th-if="*{errorMessage ne null &amp;&amp; errorMessage ne ''}">
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger"><span
+                                        class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span
+                                        th:text="*{errorMessage}"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 divider-horizontal margin-top-10 margin-btm-10"></div>
+                        </div>
+                        <div class="buscador-principal">
+                            <div class="row margin-top-25 margin-btm-30" style="margin-top: 60px;">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="roleNameId" class="fontcolor-dark">Role Name <span class="error-color">*</span></label></div>
+                                                    <div class="col-sm-6 col-sm-6">
+                                                    <input type="text"
+                                                              id="deleteRoleNameId"
+                                                              name="roleName"
+                                                              readonly="readonly"
+                                                              class="form-control themed-input"
+                                                              th:field="*{roleNameForDelete}">
+                                                    </input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="col-sm-3 col-sm-4 text-right margin-top-15"><label for="roleDescriptionId" class="fontcolor-dark">Role Description <span class="error-color">*</span></label></div>
+                                                    <div class="col-sm-6 col-sm-6">
+                                                    <input type="text"
+                                                              id="deleteRoleDescriptionId"
+                                                              name="roleName"
+                                                              readonly="readonly"
+                                                              class="form-control themed-input"
+                                                              th:field="*{roleDescriptionForDelete}">
+                                                    </input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6" id="deletePermissionName">
+                                                <div class="form-group">
+                                                    <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="deletePermissionNameId" class="fontcolor-dark">Permission Names <span class="error-color">*</span></label></div>
+                                                    <div class="col-md-8 col-sm-6">
+                                                        <div class="select-holder" data-th-if="*{selectedPermissionNames ne null &amp;&amp; message ne ''}">
+                                                            <select id="deletePermissionNameId"
+                                                                    multiple="multiple"
+                                                                    disabled="disabled"
+                                                                    class="form-control themed-input themed-select multiSelectPermissionName"
+                                                                    name="permissionNamesForDelete">
+
+                                                                <option th:each="permission : *{permissionNameList}" th:value="${permission}" th:text="${permission}" th:selected="${rolesForm.selectedPermissionNames.contains(permission)}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 text-center">
+                                            <!--<button type="submit" name="action" value="loadCreateRole" class="btn btn-default themed-button btn-primary" id="createrolesubmitHdn" style="display: none;">Submit</button>-->
+                                            <button type="button" class="btn btn-default themed-button btn-primary" id="deleteRole" onclick="deleteFromDb()">Delete</button>
+                                            <!--<button type="reset" class="btn btn-default themed-button themed-button-cancel" value="clear" id="createrequestclear" onclick="resetDefault()">Clear</button>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+</body>
+</html>

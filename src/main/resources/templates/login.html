@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ReCAP</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/Bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/DataTables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{../css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{../css/collection.css}"/>
+    <script type="text/javascript" th:src="@{../lib/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/jquery.dataTables.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/dataTables.bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Buttons/js/buttons.colVis.js}"></script>
+    <script type="text/javascript" th:src="@{../js/main.js}"></script>
+    <script type="text/javascript" th:src="@{../js/login.js}"></script>
+    <script type="text/javascript" th:src="@{../js/formvalidation.js}"></script>
+    <script type="text/javascript" th:async="true" th:src="@{../js/twitter-widgets.js}" charset="utf-8"></script>
+</head>
+<body class="login-page">
+<div class="login-content content-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 padding-15">
+                <div class="col-sm-4">
+                    <div class="row recap-logo-outerwrapper margin-btm-10">
+                        <div class="recap-logo-container">
+                            <a href="http://recap.princeton.edu/"><img src="images/recap-logo.png" class="recap-logo"
+                                                                       alt="ReCAP"/></a>
+                            <h3>The Research Collections And <br/>Preservation Consortium</h3>
+                        </div>
+                    </div>
+                    <div class="twitter-block row">
+                        <div class="col-sm-12">
+                            <a class="twitter-timeline" data-height="350" href="https://twitter.com/recaplib">Tweets by
+                                recaplib</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-1 col-lg-2">
+                </div>
+                <div class="col-sm-6 col-md-7 col-lg-6">
+                    <!-- Login Section-->
+                    <div class="login-wrapper">
+                        <form class="form-horizontal" id="home_login" method="post" action=""
+                              th:object="${userForm}">
+                            <h2 class="heading">Login</h2>
+                            <div class="form-group">
+                                <div class="col-md-3 text-right">
+                                </div>
+                                <div class="col-md-9">
+                                    <p id="wrongCredentialsError" th:if="${#fields.hasErrors('wrongCredentials')}"
+                                       class="label label-danger" th:errors="*{wrongCredentials}"><span
+                                            id="errorMessageSpanId" th:text="${e.message}"></span></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 text-right">
+                                    <label for="networkloginid" class="margin-top-10">Network Login id</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control themed-input" id="networkloginid"
+                                           th:field="*{username}"
+                                           th:onkeyup="'javascript:toggleUsernameValidation()'"/>
+                                    <p id="userNameError" th:if="${#fields.hasErrors('username')}"
+                                       class="label label-danger" th:errors="*{username}"><span
+                                            id="errorMessageSpanId" th:text="${e.message}"></span></p>
+                                    <span id="networkloginidError" style="color: red; display : none;">Network Login id is required.</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 text-right">
+                                    <label for="institution" class="margin-top-10">Institution</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="select-holder">
+                                        <select class="form-control themed-input themed-select" id="institution"
+                                                th:field="*{institution}"
+                                                th:onchange="'javascript:toggleInstitutionValidation()'">
+                                            <option value="0">Select One</option>
+                                            <option value="1">PUL</option>
+                                            <option value="2">CUL</option>
+                                            <option value="3">NYPL</option>
+                                        </select>
+                                    </div>
+                                    <p id="institutionError" th:if="${#fields.hasErrors('institution')}"
+                                       class="label label-danger" th:errors="*{institution}"><span
+                                            id="errorMessageSpanId" th:text="${e.message}"></span></p>
+                                    <span id="institutionErrorId" style="color: red; display : none ;">Institution is required.</span>
+                                </div>
+                            </div>
+                            <div class="form-group" id="homelogin_password">
+                                <div class="col-md-3 text-right">
+                                    <label for="loginpassword" class="margin-top-10">Password</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control themed-input" id="loginpassword"
+                                           th:field="*{password}"
+                                           th:onkeyup="'javascript:togglePasswordValidation()'"/>
+                                    <p id="passwordError" th:if="${#fields.hasErrors('password')}"
+                                       class="label label-danger" th:errors="*{password}"><span
+                                            id="errorMessageSpanId" th:text="${e.message}"></span></p>
+                                    <span id="loginpasswordError" style="color: red; display : none;">Password is required.</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 text-right"></div>
+                                <div class="col-md-9">
+                                    <div class="login-form-button-wrapper  margin-btm-10">
+                                        <button type="submit" id="submitBtn" class="btn btn-default themed-button">
+                                            Submit
+                                        </button>
+                                        <button type="reset"
+                                                class="btn btn-default themed-button themed-button-cancel pull-right">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="login-form-note">
+                                <p class="margin-0 margin-btm-10">All fields are mandatory.</p>
+                                <p class="margin-0">Network Login id and Password used internally in the
+                                    partner </p>
+                                <p class="margin-0">ILS for Authentification</p>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Login Section-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content-bottom margin-top-20 margin-btm-20">
+    <div class="container">
+        <div class="row">
+            <div class="recap-members-logos">
+                <div class="col-sm-9">
+                    <h3 class="text-center margin-btm-20">Members of ReCAP</h3>
+                    <div class="row">
+                        <div class="col-sm-5 margin-top-10 padding-right-50">
+                            <a href="http://www.columbia.edu/"><img alt="columbia university"
+                                                                    src="images/member-logo/columbia-logo.png"
+                                                                    class="member-columbia-univ-logo"/></a>
+                        </div>
+                        <div class="col-sm-4 margin-top-10 padding-right-50 padding-left-50">
+                            <a href="http://www.princeton.edu/main/"><img alt="princeton university"
+                                                                          src="images/member-logo/princeton-logo.png"
+                                                                          class="member-princeton-univ-logo"/></a>
+                        </div>
+
+                        <div class="col-sm-3 padding-left-50">
+                            <a href="https://www.nypl.org/"><img alt="Newyork Public Libraray"
+                                                                 src="images/member-logo/nypl-logo.png"
+                                                                 class="member-ny-public-logo"/></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h3 class="margin-btm-0">ReCAP</h3>
+                    <ul class="border-style-left">
+                        <li><a href="https://recap.princeton.edu/" target="_blank">Home</a></li>
+                        <li><a href="https://recap.princeton.edu/facility-storage" target="_blank">Facility &amp;
+                            Storage</a></li>
+                        <li><a href="https://recap.princeton.edu/operations-statistics" target="_blank">Operations &amp;
+                            Statistics</a></li>
+                        <li><a href="https://recap.princeton.edu/collections-services" target="_blank">Collections &amp;
+                            Services</a></li>
+                        <li><a href="https://recap.princeton.edu/information-publications" target="_blank">Information
+                            &amp; Publications</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

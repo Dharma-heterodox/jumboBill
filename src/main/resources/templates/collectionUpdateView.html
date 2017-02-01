@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Collection Update</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:src="@{../js/collectionUpdateView.js}"></script>
+</head>
+<body>
+<div th:replace="recapHeader :: #recapPageHeaderId"></div>
+<div class="container col-xs-12">
+    <div id="collectionUpdateViewDivId" name="collectionUpdateViewDivName" th:fragment="collectionUpdateContent">
+        <div id="collectionUpdateFormDivId" name="collectionUpdateFormDivName" th:fragment="collectionUpdate-form"
+             xmlns:th="http://www.thymeleaf.org"
+             th:remove="tag">
+            <form id="collectionUpdate-form" name="collectionUpdate-form" class="form-horizontal" action="#"
+                  th:action="@{/collectionUpdate}"
+                  th:object="${bibliographicMarcForm}" method="post">
+                <fieldset>
+                    <div id="collectionUpdateDivId" name="collectionUpdateDivName">
+                        <div class="col-md-12" th:if="*{!submitted}">
+                            <span>Fields marked with asterisk(*) are mandatory.</span>
+                        </div>
+                        <div class="container">
+                            <input id="bibId" type="hidden" th:field="*{bibId}"/>
+                            <input id="itemId" type="hidden" th:field="*{itemId}"/>
+                            <input id="shared" type="hidden" th:field="*{shared}"/>
+                            <input id="submitted" type="hidden" th:field="*{submitted}"/>
+                            <div th:if="${bibliographicMarcForm.message ne null &amp;&amp; bibliographicMarcForm.message ne ''}" class="form-group col-md-12 alert alert-success" style="margin-top: 15px;">
+                                <span th:text="${bibliographicMarcForm.message}"></span>
+                            </div>
+                            <div th:if="${bibliographicMarcForm.errorMessage ne null &amp;&amp; bibliographicMarcForm.errorMessage ne ''}" class="form-group col-md-12 alert alert-danger" style="margin-top: 15px;">
+                                <span th:text="${bibliographicMarcForm.errorMessage}"></span>
+                            </div>
+                            <div class="form-group col-md-12" style="padding-left: 0px;">
+                                <input type="hidden" th:field="*{title}"/>
+                                <h3 style="font-weight: bold; margin-top: 10px;"><span th:text="${bibliographicMarcForm.title}"></span></h3>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" th:field="*{author}"/>
+                                <input type="hidden" th:field="*{publisher}"/>
+                                <input type="hidden" th:field="*{publishedDate}"/>
+                                <input type="hidden" th:field="*{owningInstitution}"/>
+                                <input type="hidden" th:field="*{callNumber}"/>
+                                <span style="font-weight: bold;">Author : </span><span th:text="${bibliographicMarcForm.author}"></span><br/>
+                                <span style="font-weight: bold;">Publisher : </span><span th:text="${bibliographicMarcForm.publisher}"></span><br/>
+                                <span style="font-weight: bold;">Published Date : </span><span th:text="${bibliographicMarcForm.publishedDate}"></span><br/>
+                                <span style="font-weight: bold;">Owning Institution : </span><span th:text="${bibliographicMarcForm.owningInstitution}"></span><br/>
+                                <span style="font-weight: bold;">Call Number : </span><span th:text="${bibliographicMarcForm.callNumber}"></span><br/>
+                            </div>
+                            <div class="form-group">
+                                <span style="font-weight: bold;">MARC Content : </span>
+                            </div>
+                            <div class="form-group">
+                                <table class="col-sm-12">
+                                    <colgroup>
+                                        <col style="width:20%"/>
+                                        <col style="width:80%"/>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <input type="hidden" th:field="*{tag000}"/>
+                                        <td><span>tag000</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.tag000}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{controlNumber001}"/>
+                                        <td><span>Control Number (001)</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.controlNumber001}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{controlNumber005}"/>
+                                        <td><span>Date and Time (005)</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.controlNumber005}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{controlNumber008}"/>
+                                        <td><span>Fixed Length Data Element (008)</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.controlNumber008}"></span></td>
+                                    </tr>
+                                    <tr th:each="bibDataField,bibDataFieldStat : *{bibDataFields}">
+                                        <td>
+                                            <input type="hidden" th:field="*{bibDataFields[__${bibDataFieldStat.index}__].dataFieldTag}"/>
+                                            <input type="hidden" th:field="*{bibDataFields[__${bibDataFieldStat.index}__].indicator1}"/>
+                                            <input type="hidden" th:field="*{bibDataFields[__${bibDataFieldStat.index}__].indicator2}"/>
+                                            <input type="hidden" th:field="*{bibDataFields[__${bibDataFieldStat.index}__].dataFieldValue}"/>
+                                            <span style="margin-left: 30px;" th:text="${bibDataField.dataFieldTag}"></span>
+                                            <span th:inline="text">[[${bibDataField.indicator1}]][[${bibDataField.indicator2}]]</span>
+                                        </td>
+                                        <td><span th:text="${bibDataField.dataFieldValue}"></span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <span style="font-weight: bold;">Item Details : </span>
+                            </div>
+                            <div class="form-group">
+                                <table class="col-sm-12">
+                                    <colgroup>
+                                        <col style="width:20%"/>
+                                        <col style="width:80%"/>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <input type="hidden" th:field="*{availability}"/>
+                                        <td><span>Availability</span></td>
+                                        <td th:if="${bibliographicMarcForm.availability == 'Available'}"><span th:text="'In Recap'"></span></td>
+                                        <td th:if="${bibliographicMarcForm.availability == 'Not Available'}"><span th:text="'Out'"></span></td>
+                                        <td th:if="${bibliographicMarcForm.availability != 'Available' &amp;&amp; bibliographicMarcForm.availability != 'Not Available'}"><span th:text="${bibliographicMarcForm.availability}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{barcode}"/>
+                                        <td><span>Barcode</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.barcode}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{customerCode}"/>
+                                        <td><span>Customer Code</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.customerCode}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input type="hidden" th:field="*{useRestriction}"/>
+                                        <td><span>Use Restriction</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.useRestriction}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <input id="cgdField" type="hidden" th:field="*{collectionGroupDesignation}"/>
+                                        <td><span>Collection Group Designation (CGD)</span></td>
+                                        <td><span th:text="${bibliographicMarcForm.collectionGroupDesignation}"></span></td>
+                                    </tr>
+                                    <tr id="collectionActionSelection">
+                                        <td></td>
+                                        <td style="padding-top: 10px; padding-bottom: 10px;">
+                                            <input type="radio" name="editCgdAction" id="editCgdAction" value="Update CGD" th:field="*{collectionAction}"/>
+                                            <label for="editCgdAction">Edit CGD</label>
+                                            <input type="radio" name="deaccesionAction" id="deaccesionAction" value="Deaccession" th:field="*{collectionAction}" style="margin-left: 10px;"/>
+                                            <label for="deaccesionAction">Deaccession</label>
+                                        </td>
+                                    </tr>
+                                    <tr id="updateCGDNewRow">
+                                        <td><span>New CGD</span><span style="color: red" th:if="*{!submitted}">*</span></td>
+                                        <td style="padding-bottom: 10px;">
+                                            <select id="newCgdField"
+                                                    class="form-control"
+                                                    th:field="*{newCollectionGroupDesignation}"
+                                                    th:if="*{!submitted}"
+                                                    style="width: 150px;" >
+                                                <option value="Shared">Shared</option>
+                                                <option value="Private">Private</option>
+                                                <option value="Open">Open</option>
+                                            </select>
+                                            <span th:if="*{submitted}" th:text="${bibliographicMarcForm.newCollectionGroupDesignation}"></span>
+                                            <span id="cgdErrorMessage" style="color: red;">Choose a new CGD.</span>
+                                        </td>
+                                    </tr>
+                                    <tr id="updateCGDNotesRow">
+                                        <td><span>CGD Change Notes</span><span style="color: red" th:if="*{!submitted &amp;&amp; collectionGroupDesignation eq 'Shared'}">*</span></td>
+                                        <td style="padding-bottom: 10px;">
+                                            <textarea id="cgdChangeNotesField"
+                                                      class="form-control"
+                                                      th:field="*{cgdChangeNotes}"
+                                                      th:if="*{!submitted}"
+                                                      rows="3">
+                                            </textarea>
+                                            <span th:if="*{submitted}" th:text="${bibliographicMarcForm.cgdChangeNotes}"></span>
+                                            <span id="cgdNotesErrorMessage" style="color: red;">Please enter CGD Change Notes.</span>
+                                        </td>
+                                    </tr>
+                                    <tr id="deaccessionTypeRow">
+                                        <td><span>Deaccession Type</span></td>
+                                        <td style="padding-bottom: 10px;">
+                                            <input type="text"
+                                                   id="deaccessionType"
+                                                   name="deaccessionType"
+                                                   class="form-control"
+                                                   th:field="*{deaccessionType}"
+                                                   th:if="*{!submitted}"
+                                                   style="width: 260px;"
+                                                   readonly="readonly">
+                                            </input>
+                                            <span th:if="*{submitted}" th:text="${bibliographicMarcForm.deaccessionType}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr id="deaccessionLocationRow">
+                                        <td><span>Delivery Location</span><span style="color: red" th:if="*{!submitted &amp;&amp; deaccessionType eq 'Permanent Withdrawl Direct (PWD)'}">*</span></td>
+                                        <td style="padding-bottom: 10px;">
+                                            <select id="deliveryLocation"
+                                                    name="deliveryLocation"
+                                                    class="form-control"
+                                                    th:field="*{deliveryLocation}"
+                                                    th:if="*{!submitted}"
+                                                    th:disabled="${bibliographicMarcForm.availability != 'Available'}"
+                                                    style="width: 260px;">
+                                                <option value=""></option>
+                                                <option th:each="location : *{deliveryLocations}" th:value="${location}" th:text="${location}"></option>
+                                            </select>
+                                            <span th:if="*{submitted}" th:text="${bibliographicMarcForm.deliveryLocation}"></span>
+                                            <span id="locationErrorMessage" style="color: red;">This is a mandatory field.</span>
+                                        </td>
+                                    </tr>
+                                    <tr id="deaccessionNotesRow">
+                                        <td><span>Deaccession Notes</span><span style="color: red" th:if="*{!submitted}">*</span></td>
+                                        <td style="padding-bottom: 10px;">
+                                            <textarea id="deaccessionNotesField"
+                                                      name="deaccessionNotesField"
+                                                      class="form-control"
+                                                      th:field="*{deaccessionNotes}"
+                                                      th:if="*{!submitted}"
+                                                      rows="3">
+                                            </textarea>
+                                            <span th:if="*{submitted}" th:text="${bibliographicMarcForm.deaccessionNotes}"></span>
+                                            <span id="deaccessionNotesErrorMessage" style="color: red;">Please enter Deaccession Notes.</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-group" align="center" style="margin-bottom: 40px;">
+                                <button id="hiddenCollectionUpdateButton"
+                                        type="submit"
+                                        name="action"
+                                        value="collectionUpdate"
+                                        hidden="hidden">
+                                    Submit
+                                </button>
+                                <button id="collectionUpdateButton"
+                                        type="button"
+                                        class="btn btn-info active"
+                                        style="width: 100px;"
+                                        onclick="validateInputs()"
+                                        th:align="center"
+                                        th:if="*{!submitted}">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

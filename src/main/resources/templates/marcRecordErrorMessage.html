@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/Bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/DataTables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{../css/styles.css}"/>
+    <script type="text/javascript" th:src="@{../lib/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/jquery.dataTables.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/dataTables.bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Buttons/js/buttons.colVis.js}"></script>
+    <script type="text/javascript" th:src="@{../js/main.js}"></script>
+</head>
+<body class="dashboard-detailpage dashboard-page">
+<div th:replace="recapHeader :: #recapPageHeaderId"></div>
+<section>
+    <div class="container-fluid">
+        <form id="marcRecord-form" name="marcRecord-form" class="form-horizontal" action="#"
+              th:action="@{/openMarcRecord}"
+              th:object="${bibliographicMarcForm}" method="post">
+            <div class="row margin-btm-10 margin-top-20">
+                <div class="col-sm-12">
+                    <div class="bg-danger text-danger padding-10">
+                        <span class="margin-right-05 glyphicon glyphicon-warning-sign"></span>
+                        <span th:text="${bibliographicMarcForm.errorMessage}"></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<div th:replace="recapFooter :: #recapPageFooterId"></div>
+</body>
+</html>

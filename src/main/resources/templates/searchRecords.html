@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ReCAP</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{../css/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/Bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../lib/DataTables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{../css/styles.css}"/>
+    <!--<script type="text/javascript" th:src="@{../js/jquery.tablesorter.js}"></script>-->
+    <script type="text/javascript" th:src="@{../lib/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Bootstrap/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/jquery.dataTables.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/DataTables/js/dataTables.bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{../lib/Buttons/js/buttons.colVis.js}"></script>
+    <script type="text/javascript" th:src="@{../js/main.js}"></script>
+    <script type="text/javascript" th:src="@{../js/jquery.blockUI.js}"></script>
+    <script type="text/javascript" th:src="@{../js/formvalidation.js}"></script>
+</head>
+<body class="dashboard-page">
+<div th:replace="recapHeader :: #recapPageHeaderId"></div>
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="dashboard-content col-sm-12">
+                <ul th:unless="${session == null}" id="search-content-tab" class="nav nav-tabs" role="tablist">
+                    <li th:if="${session.isSearchAllowed}"  role="presentation" class="tab-search-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'active':''}">
+                        <a href="/search" aria-controls="search" class="tab-search"><span class="icons"></span><span>Search</span></a>
+                    </li>
+                    <li th:if="${session.isCollectionAllowed}" role="presentation" class="tab-collection-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/collection' ? 'active':''}">
+                        <a href="/collection" aria-controls="collection" class="tab-collection"><span class="icons"></span><span>Collection</span></a>
+                    </li>
+                    <li th:if="${session.isRequestAllowed}" role="presentation" class="tab-request-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/request' ? 'active':''}">
+                        <a href="/request" aria-controls="request" class="tab-request"><span class="icons"></span><span>Request</span></a>
+                    </li>
+                    <li th:if="${session.isReportAllowed}" role="presentation" class="tab-reports-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/reports' ? 'active':''}">
+                        <a href="/reports" aria-controls="reports" class="tab-reports"><span class="icons"></span><span>Reports</span></a>
+                    </li>
+                    <li th:if="${session.isUserRoleAllowed}" role="presentation" class="tab-roles-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/roles' ? 'active':''}">
+                        <a href="/roles" aria-controls="roles" class="tab-role"><span class="icons"></span><span>Roles</span></a>
+                    </li>
+                    <li th:if="${session.isUserRoleAllowed}" role="presentation" class="tab-users-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/userRoles' ? 'active':''}">
+                        <a href="/userRoles" aria-controls="users" class="tab-users"><span class="icons"></span><span>Users</span></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div th:replace="${template} :: content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="recapFooter :: #recapPageFooterId"></div>
+</body>
+</html>
